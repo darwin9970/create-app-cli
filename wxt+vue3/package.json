@@ -1,0 +1,51 @@
+{
+  "name": "wxt-vue-starter",
+  "description": "manifest.json description",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "wxt --mode development",
+    "pro": "wxt --mode production",
+    "dev:firefox": "wxt -b firefox",
+    "pro:firefox": "wxt -b firefox",
+    "build": "wxt build --mode production",
+    "build:firefox": "wxt build -b firefox --mode production",
+    "zip": "wxt zip --mode production",
+    "zip:firefox": "wxt zip -b firefox --mode production",
+    "compile": "vue-tsc --noEmit",
+    "postinstall": "wxt prepare",
+    "lint": "eslint . --ext js,vue",
+    "fix": "eslint --fix . --ext js,vue"
+  },
+  "dependencies": {
+    "ant-design-vue": "^4.2.6",
+    "prettier": "^3.5.3",
+    "vue": "^3.5.12"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.23.0",
+    "@types/chrome": "^0.0.280",
+    "@types/node": "^22.13.14",
+    "@vitejs/plugin-vue-jsx": "^4.1.2",
+    "@wxt-dev/module-vue": "^1.0.1",
+    "chokidar": "^4.0.3",
+    "eslint": "^9.23.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.2.5",
+    "eslint-plugin-vue": "^10.0.0",
+    "globals": "^16.0.0",
+    "gulp": "^5.0.0",
+    "gulp-javascript-obfuscator": "^1.1.6",
+    "prettier": "^3.5.3",
+    "sass": "^1.86.0",
+    "typescript": "5.6.3",
+    "unplugin-vue-components": "^28.4.1",
+    "vinyl-sourcemaps-apply": "^0.2.1",
+    "vue-eslint-parser": "^10.1.1",
+    "vue-tsc": "^2.1.10",
+    "wxt": "^0.19.29"
+  }
+}

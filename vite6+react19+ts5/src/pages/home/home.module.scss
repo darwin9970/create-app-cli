@@ -1,0 +1,7 @@
+.store {
+  background: $color-primary;
+  width: 50px;
+  @extend .flex-hor-center;
+  @extend .flex-ver-center;
+  @include half_radius(50px);
+}
