@@ -42,14 +42,14 @@ export function validateProjectName(name) {
 /**
  * 验证目标路径是否可用
  * @param {string} targetPath - 目标路径
- * @returns {{valid: boolean, error?: string, isEmpty?: boolean}}
+ * @returns {{valid: boolean, error?: string, exists: boolean, isEmpty?: boolean}}
  */
 export async function validateTargetPath(targetPath) {
   try {
     const exists = await fs.pathExists(targetPath);
 
     if (!exists) {
-      return { valid: true, isEmpty: false };
+      return { valid: true, exists: false };
     }
 
     // 检查是否为目录
@@ -57,6 +57,7 @@ export async function validateTargetPath(targetPath) {
     if (!stats.isDirectory()) {
       return {
         valid: false,
+        exists: true,
         error: '目标路径已存在且不是一个目录'
       };
     }
@@ -67,11 +68,13 @@ export async function validateTargetPath(targetPath) {
 
     return {
       valid: true,
+      exists: true,
       isEmpty
     };
   } catch (error) {
     return {
       valid: false,
+      exists: false,
       error: `无法访问目标路径: ${error.message}`
     };
   }

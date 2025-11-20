@@ -16,6 +16,7 @@ export async function create(projectName, options = {}) {
     // 创建生成器实例
     const generator = new Generator(config.projectName, config.template, {
       installDeps: config.installDeps,
+      packageManager: config.packageManager,
       initGit: config.initGit,
       cwd: options.cwd || process.cwd()
     });

@@ -6,7 +6,7 @@ import { getAvailableTemplates } from './utils.js';
 /**
  * 获取项目配置
  * @param {string} projectName - 命令行传入的项目名称
- * @returns {Promise<{projectName: string, template: string, installDeps: boolean, initGit: boolean}>}
+ * @returns {Promise<{projectName: string, template: string, installDeps: boolean, packageManager: string, initGit: boolean}>}
  */
 export async function getProjectConfig(projectName) {
   const templates = await getAvailableTemplates();
@@ -53,21 +53,43 @@ export async function getProjectConfig(projectName) {
     default: true
   });
 
-  // 是否初始化 Git
-  questions.push({
-    type: 'confirm',
-    name: 'initGit',
-    message: '是否初始化 Git 仓库?',
-    default: true
-  });
-
   const answers = await inquirer.prompt(questions);
+
+  // 如果选择安装依赖，让用户选择包管理器
+  let packageManager = 'npm';
+  if (answers.installDeps) {
+    const pmAnswer = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'packageManager',
+        message: '选择包管理器:',
+        choices: [
+          { name: 'npm', value: 'npm' },
+          { name: 'yarn', value: 'yarn' },
+          { name: 'pnpm', value: 'pnpm' }
+        ],
+        default: 'npm'
+      }
+    ]);
+    packageManager = pmAnswer.packageManager;
+  }
+
+  // 是否初始化 Git
+  const gitAnswer = await inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'initGit',
+      message: '是否初始化 Git 仓库?',
+      default: true
+    }
+  ]);
 
   return {
     projectName: projectName || answers.projectName,
     template: answers.template,
     installDeps: answers.installDeps,
-    initGit: answers.initGit
+    packageManager: packageManager,
+    initGit: gitAnswer.initGit
   };
 }
 

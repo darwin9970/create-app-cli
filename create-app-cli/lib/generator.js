@@ -24,6 +24,7 @@ export class Generator {
     this.templateName = templateName;
     this.options = {
       installDeps: options.installDeps !== false,
+      packageManager: options.packageManager || 'npm',
       initGit: options.initGit !== false,
       cwd: options.cwd || process.cwd()
     };
@@ -60,7 +61,7 @@ export class Generator {
       }
 
       // 如果目录存在且不为空，询问用户
-      if (pathValidation.isEmpty === false) {
+      if (pathValidation.exists && pathValidation.isEmpty === false) {
         spinner.stop();
         const shouldContinue = await confirmContinue(this.projectName);
         if (!shouldContinue) {
@@ -137,8 +138,10 @@ export class Generator {
       return;
     }
 
-    const packageManager = getPackageManager();
-    const spinner = ora(`使用 ${chalk.cyan(packageManager)} 安装依赖...`).start();
+    const packageManager = this.options.packageManager;
+    
+    // 显示安装提示
+    console.log(chalk.cyan(`\n📦 使用 ${chalk.bold(packageManager)} 安装依赖...\n`));
 
     try {
       let installCommand;
@@ -153,17 +156,20 @@ export class Generator {
           installCommand = 'npm install';
       }
 
+      // 显示实时输出，让用户看到安装进度
       execSync(installCommand, {
         cwd: this.targetPath,
-        stdio: 'ignore'
+        stdio: 'inherit'  // 显示实时输出
       });
 
-      spinner.succeed('依赖安装成功');
+      console.log(chalk.green('\n✔ 依赖安装成功'));
     } catch (error) {
-      spinner.fail('依赖安装失败');
+      console.log(chalk.red('\n✖ 依赖安装失败'));
+      const packageManager = this.options.packageManager;
+      const installCmd = packageManager === 'npm' ? 'npm install' : `${packageManager} install`;
       console.log(chalk.yellow('\n您可以稍后手动安装依赖:'));
       console.log(chalk.cyan(`  cd ${this.projectName}`));
-      console.log(chalk.cyan(`  npm install`));
+      console.log(chalk.cyan(`  ${installCmd}`));
     }
   }
 
@@ -269,17 +275,20 @@ dist/
    * 打印成功消息
    */
   printSuccessMessage() {
+    const packageManager = this.options.packageManager;
+    
     console.log();
     console.log(chalk.bold.green('✨ 项目创建成功!\n'));
     console.log(chalk.cyan('下一步操作:\n'));
     console.log(chalk.white(`  cd ${this.projectName}`));
     
     if (!this.options.installDeps) {
-      const packageManager = getPackageManager();
       console.log(chalk.white(`  ${packageManager} install`));
     }
     
-    console.log(chalk.white(`  npm run dev`));
+    // 根据包管理器显示相应的启动命令
+    const runCommand = packageManager === 'npm' ? 'npm run dev' : `${packageManager} dev`;
+    console.log(chalk.white(`  ${runCommand}`));
     console.log();
     console.log(chalk.gray('Happy coding! 🎉\n'));
   }
