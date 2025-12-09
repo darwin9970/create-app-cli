@@ -11,12 +11,13 @@ create-template-app/
 ├── vite6+react19/          # Vite 6 + React 19 + Ant Design
 ├── vite6+react19+ts5/      # Vite 6 + React 19 + TypeScript 5 + Ant Design
 ├── vite6+vue3+ts5/         # Vite 6 + Vue 3 + TypeScript 5 + Ant Design Vue
-└── wxt+vue3/               # WXT + Vue 3 (浏览器扩展)
+├── wxt+vue3/               # WXT + Vue 3 (浏览器扩展)
+└── umi4+react18+ts+antd5+zustand/  # UmiJS 4 + React 18 + TypeScript + Ant Design 5 + Zustand
 ```
 
 ## ✨ 特性
 
-- 📦 **5 种技术栈模板** - 涵盖移动端、Web 应用、浏览器扩展
+- 📦 **6 种技术栈模板** - 涵盖移动端、Web 应用、浏览器扩展、企业级应用
 - 🛠️ **CLI 脚手架工具** - 一键创建项目，支持自定义配置
 - 🎨 **开箱即用** - 所有模板已配置好最佳实践
 - ⚡ **现代化** - 使用最新的 Vite、React、Vue 技术栈
@@ -24,13 +25,14 @@ create-template-app/
 
 ## 📋 可用模板
 
-| 模板目录            | 技术栈                                         | 适用场景        |
-| ------------------- | ---------------------------------------------- | --------------- |
-| `vit6+vue3`         | Vite 6 + Vue 3 + Vant + Pinia                  | 移动端 H5 应用  |
-| `vite6+react19`     | Vite 6 + React 19 + Ant Design + Redux Toolkit | React Web 应用  |
-| `vite6+react19+ts5` | Vite 6 + React 19 + TypeScript 5 + Ant Design  | React + TS 应用 |
-| `vite6+vue3+ts5`    | Vite 6 + Vue 3 + TypeScript 5 + Ant Design Vue | Vue + TS 应用   |
-| `wxt+vue3`          | WXT + Vue 3 + Ant Design Vue                   | 浏览器扩展      |
+| 模板目录                        | 技术栈                                                   | 适用场景        |
+| ------------------------------- | -------------------------------------------------------- | --------------- |
+| `vit6+vue3`                     | Vite 6 + Vue 3 + Vant + Pinia                            | 移动端 H5 应用  |
+| `vite6+react19`                 | Vite 6 + React 19 + Ant Design + Redux Toolkit           | React Web 应用  |
+| `vite6+react19+ts5`             | Vite 6 + React 19 + TypeScript 5 + Ant Design            | React + TS 应用 |
+| `vite6+vue3+ts5`                | Vite 6 + Vue 3 + TypeScript 5 + Ant Design Vue           | Vue + TS 应用   |
+| `wxt+vue3`                      | WXT + Vue 3 + Ant Design Vue                             | 浏览器扩展      |
+| `umi4+react18+ts+antd5+zustand` | UmiJS 4 + React 18 + TypeScript + Ant Design 5 + Zustand | 企业级中后台    |
 
 ## 🚀 快速开始
 
@@ -135,6 +137,22 @@ npm run dev
 
 **适用场景：** Chrome/Firefox/Edge 浏览器扩展开发
 
+### 企业级中后台模板 - umi4+react18+ts+antd5+zustand
+
+**技术栈：**
+
+- UmiJS 4 (企业级前端框架)
+- React 18
+- TypeScript 5
+- Ant Design 5
+- Ant Design Pro Components
+- Zustand (状态管理)
+- ahooks (React Hooks 库)
+- ECharts 6 (图表库)
+- TailwindCSS
+
+**适用场景：** 企业级中后台管理系统、复杂业务系统、数据可视化平台
+
 ## 🔧 开发说明
 
 ### 添加新模板
@@ -180,7 +198,8 @@ npm run dev
 - **React 项目** → `vite6+react19` 或 `vite6+react19+ts5`
 - **Vue 项目** → `vite6+vue3+ts5`
 - **浏览器扩展** → `wxt+vue3`
-- **需要 TypeScript** → 选择带 `ts5` 的模板
+- **企业级中后台** → `umi4+react18+ts+antd5+zustand`
+- **需要 TypeScript** → 选择带 `ts` 或 `ts5` 的模板
 
 ### 包管理器
 
