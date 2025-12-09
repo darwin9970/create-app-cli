@@ -4,7 +4,7 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { LoginForm, ProFormText } from '@ant-design/pro-components';
 import { history, useModel } from '@umijs/max';
 import { useRequest } from 'ahooks';
-import { message } from 'antd';
+import { App } from 'antd';
 import { FC } from 'react';
 
 interface LoginParams {
@@ -12,7 +12,8 @@ interface LoginParams {
   password: string;
 }
 
-const Login: FC = () => {
+const LoginContent: FC = () => {
+  const { message } = App.useApp();
   const { refresh } = useModel('@@initialState');
   const setUserInfo = useUserStore((state) => state.setUserInfo);
 
@@ -79,6 +80,14 @@ const Login: FC = () => {
         />
       </LoginForm>
     </div>
+  );
+};
+
+const Login: FC = () => {
+  return (
+    <App>
+      <LoginContent />
+    </App>
   );
 };
 

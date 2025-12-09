@@ -1,3 +1,4 @@
+import { message } from '@/hooks/useAppMessage';
 import type {
   AxiosRequestConfig,
   AxiosResponse,
@@ -5,7 +6,6 @@ import type {
   RequestOptions
 } from '@umijs/max';
 import { request as umiRequest } from '@umijs/max';
-import { message } from 'antd';
 
 // 请求拦截器
 const requestInterceptors: RequestConfig['requestInterceptors'] = [

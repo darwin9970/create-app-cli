@@ -1,4 +1,5 @@
 import ErrorBoundary from '@/components/ErrorBoundary';
+import { AntdStaticHolder, useAntdApp } from '@/hooks/useAppMessage';
 import { logout } from '@/services';
 import { useAppStore, useUserStore } from '@/stores';
 import {
@@ -12,7 +13,7 @@ import {
 } from '@ant-design/icons';
 import { history, Outlet, useLocation } from '@umijs/max';
 import { useRequest } from 'ahooks';
-import { Avatar, Badge, Dropdown, Layout, Menu, message } from 'antd';
+import { App, Avatar, Badge, Dropdown, Layout, Menu } from 'antd';
 import { FC } from 'react';
 import styles from './BasicLayout.less';
 
@@ -50,8 +51,9 @@ const siderMenuConfig: Record<string, any[]> = {
   ]
 };
 
-const BasicLayout: FC = () => {
+const BasicLayoutContent: FC = () => {
   const location = useLocation();
+  const { message } = useAntdApp();
 
   // Zustand stores
   const userInfo = useUserStore((state) => state.userInfo);
@@ -200,6 +202,19 @@ const BasicLayout: FC = () => {
         </Content>
       </Layout>
     </Layout>
+  );
+};
+
+/**
+ * BasicLayout 包裹 App 组件
+ * 确保所有子组件可以使用 App.useApp() 获取 message/notification/modal
+ */
+const BasicLayout: FC = () => {
+  return (
+    <App>
+      <AntdStaticHolder />
+      <BasicLayoutContent />
+    </App>
   );
 };
 
