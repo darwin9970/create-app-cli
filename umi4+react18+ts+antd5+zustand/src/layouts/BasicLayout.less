@@ -1,0 +1,189 @@
+.layout {
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: #001529;
+  height: 48px;
+  line-height: 48px;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+
+  img {
+    height: 24px;
+  }
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  justify-content: flex-end;
+  margin-left: 500px;
+  overflow: hidden;
+}
+
+.moduleMenu {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border-bottom: none;
+  justify-content: flex-end;
+
+  :global {
+    .ant-menu-item {
+      color: rgba(255, 255, 255, 65%) !important;
+      background: transparent !important;
+
+      &::after {
+        border-bottom: 2px solid transparent !important;
+        transition: border-color 0.3s;
+      }
+
+      &:hover {
+        color: #fff !important;
+        background: transparent !important;
+
+        &::after {
+          border-bottom-color: rgba(255, 255, 255, 30%) !important;
+        }
+      }
+
+      &.ant-menu-item-selected {
+        color: #fff !important;
+        background: transparent !important;
+
+        &::after {
+          border-bottom-color: #1890ff !important;
+        }
+      }
+    }
+
+    .ant-menu-overflow-item-rest {
+      color: rgba(255, 255, 255, 65%) !important;
+      background: transparent !important;
+
+      &:hover {
+        color: #fff !important;
+      }
+    }
+
+    .anticon-ellipsis {
+      color: #fff !important;
+    }
+  }
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 65%);
+  margin-left: 16px;
+  flex-shrink: 0;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+.userName {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sider {
+  position: relative;
+  background: #fff;
+  border-right: 1px solid #f0f0f0;
+
+  :global {
+    .ant-layout-sider-children {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+  }
+}
+
+.siderMenu {
+  flex: 1;
+  border-right: none;
+  overflow-y: auto;
+}
+
+.collapseBtn {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-top: 1px solid #f0f0f0;
+  color: rgba(0, 0, 0, 65%);
+  background: #fff;
+  margin-top: auto;
+
+  &:hover {
+    color: #1890ff;
+    background: #fafafa;
+  }
+}
+
+.content {
+  padding: 0;
+  background: #f5f5f5;
+  min-height: calc(100vh - 48px);
+  overflow: auto;
+}
+
+.contentFull {
+  padding: 0;
+  background: #f5f5f5;
+  min-height: calc(100vh - 48px);
+  overflow: auto;
+}
+
+.bellIcon {
+  font-size: 18px;
+  cursor: pointer;
+  margin-right: 16px;
+}
+
+.siderFooter {
+  border-top: 1px solid #f0f0f0;
+  background: #fff;
+}
+
+.recycleBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 65%);
+
+  &:hover {
+    color: #1890ff;
+    background: #fafafa;
+  }
+}

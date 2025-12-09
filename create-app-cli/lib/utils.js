@@ -48,6 +48,11 @@ export async function getAvailableTemplates() {
       name: 'wxt+vue3',
       path: path.join(templateRoot, 'wxt+vue3'),
       description: 'WXT + Vue 3 (浏览器扩展)'
+    },
+    {
+      name: 'umi4+react18+ts+antd5+zustand',
+      path: path.join(templateRoot, 'umi4+react18+ts+antd5+zustand'),
+      description: 'UmiJS 4 + React 18 + TypeScript + Ant Design 5 + Zustand'
     }
   ];
 

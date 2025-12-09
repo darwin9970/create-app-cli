@@ -1,0 +1,81 @@
+/* 全局样式 */
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Pro Layout 容器高度 */
+.ant-pro-layout {
+  min-height: 100vh;
+}
+
+.ant-pro-layout-content {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 56px); /* 56px 为 header 高度 */
+  padding: 24px;
+}
+
+/* 顶部菜单超出省略 */
+.ant-pro-top-nav-header-menu {
+  flex: 1;
+  overflow: hidden;
+
+  .ant-menu-overflow {
+    flex-wrap: nowrap;
+    max-width: 100%;
+  }
+
+  .ant-menu-overflow-item {
+    flex-shrink: 0;
+  }
+}
+
+/* Header 右侧模块导航 */
+.ant-pro-global-header-header-actions {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  max-width: calc(100% - 200px);
+  overflow: hidden;
+
+  .ant-menu-horizontal {
+    flex: 1;
+    min-width: 0;
+    border-bottom: none;
+    background: transparent;
+
+    .ant-menu-item {
+      color: rgba(255, 255, 255, 65%);
+
+      &:hover,
+      &.ant-menu-item-selected {
+        color: #fff;
+      }
+    }
+
+    .ant-menu-overflow-item-rest {
+      color: rgba(255, 255, 255, 65%);
+    }
+  }
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 12%);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
