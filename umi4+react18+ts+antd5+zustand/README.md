@@ -101,6 +101,144 @@ pnpm format
 | 测试 | `config/config.test.ts` | 测试服务器            |
 | 生产 | `config/config.prod.ts` | 生产服务器            |
 
+## 使用示例
+
+### ahooks useRequest
+
+```tsx
+import { useRequest } from 'ahooks';
+import { getUserList, saveUser } from '@/services';
+
+const UserList: FC = () => {
+  // 基础用法 - 自动请求
+  const { data, loading, error, refresh } = useRequest(getUserList);
+
+  // 自动请求带参数 - 使用 defaultParams
+  const { data, loading } = useRequest(getUserList, {
+    defaultParams: [{ page: 1, size: 10 }]
+  });
+
+  // 手动触发
+  const { run, loading } = useRequest(getUserList, { manual: true });
+  // 调用时传参
+  run({ page: 1, size: 10 });
+
+  // 带防抖
+  const { run: save } = useRequest(saveUser, {
+    debounceWait: 300,
+    manual: true
+  });
+
+  return <Table dataSource={data} loading={loading} />;
+};
+```
+
+### Zustand 状态管理
+
+```tsx
+// 定义 Store (src/stores/user.ts)
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+
+interface UserState {
+  userInfo: UserInfo | null;
+}
+
+interface UserActions {
+  setUserInfo: (userInfo: UserInfo | null) => void;
+  clearUser: () => void;
+}
+
+type UserStore = UserState & UserActions;
+
+export const useUserStore = create<UserStore>()(
+  persist(
+    (set) => ({
+      userInfo: null,
+      setUserInfo: (userInfo) => set({ userInfo }),
+      clearUser: () => set({ userInfo: null })
+    }),
+    { name: 'user-info' }
+  )
+);
+
+// 组件中使用 (selector 模式优化渲染)
+import { useUserStore } from '@/stores';
+
+const Header: FC = () => {
+  const userInfo = useUserStore((state) => state.userInfo);
+  const clearUser = useUserStore((state) => state.clearUser);
+
+  return <span>{userInfo?.username}</span>;
+};
+
+// 非 React 上下文中使用
+const token = useUserStore.getState().userInfo?.token;
+```
+
+### 自定义 Hooks
+
+#### useChart - ECharts 图表
+
+```tsx
+import { useChart } from '@/hooks';
+
+const Dashboard: FC = () => {
+  const options = useMemo(
+    () => ({
+      xAxis: { type: 'category', data: ['Mon', 'Tue', 'Wed'] },
+      yAxis: { type: 'value' },
+      series: [{ data: [120, 200, 150], type: 'bar' }]
+    }),
+    []
+  );
+
+  const { chartRef } = useChart(options);
+
+  return <div ref={chartRef} style={{ width: '100%', height: 400 }} />;
+};
+```
+
+#### useDownload - 文件下载
+
+```tsx
+import { useDownload } from '@/hooks';
+import { exportExcel } from '@/services';
+
+const ExportButton: FC = () => {
+  const { loading, download } = useDownload(exportExcel, {
+    successMsg: '导出成功'
+  });
+
+  return (
+    <Button
+      loading={loading}
+      onClick={() => download({ id: 1 }, 'report.xlsx')}
+    >
+      导出
+    </Button>
+  );
+};
+```
+
+#### useAppMessage - 全局消息
+
+```tsx
+// React 组件内
+import { useAntdApp } from '@/hooks';
+
+const MyComponent: FC = () => {
+  const { message, modal, notification } = useAntdApp();
+  message.success('操作成功');
+};
+
+// 非 React 上下文 (如 request.ts)
+import { message, modal } from '@/hooks';
+
+message.error('请求失败');
+modal.confirm({ title: '确认删除?' });
+```
+
 ## License
 
 MIT
