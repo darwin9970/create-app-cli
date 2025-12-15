@@ -59,7 +59,7 @@ test_case "检查 CLI 入口文件" "[ -f bin/cli.js ]"
 test_case "检查核心模块文件" "[ -f lib/index.js ] && [ -f lib/generator.js ] && [ -f lib/prompts.js ] && [ -f lib/utils.js ] && [ -f lib/validator.js ]"
 
 # 测试 4: 验证模板目录
-test_case "检查模板目录" "[ -d ../vit6+vue3 ] && [ -d ../vite6+react19 ]"
+test_case "检查模板目录" "[ -d ../vit6+vue3 ] && [ -d ../vite6+react19 ] && [ -d ../vite6+react19+ts5 ] && [ -d ../vite6+vue3+ts5 ] && [ -d ../wxt+vue3 ] && [ -d ../umi4+react18+ts+antd5+zustand ]"
 
 # 测试 5: Node 语法检查
 echo -e "${YELLOW}测试: Node 语法检查${NC}"

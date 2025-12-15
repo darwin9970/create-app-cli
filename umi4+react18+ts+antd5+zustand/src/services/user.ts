@@ -12,12 +12,33 @@ export interface UserInfo {
   avatar?: string;
   token: string;
   roles?: string[];
+  permissions?: string[];
+}
+
+export interface UserRecord {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+  status: number;
+  department: string;
+  createTime: string;
 }
 
 export interface UserListParams {
   current?: number;
   pageSize?: number;
-  keyword?: string;
+  name?: string;
+  phone?: string;
+  department?: string;
+  status?: number;
+}
+
+export interface UserListResult {
+  list: UserRecord[];
+  total: number;
+  current: number;
+  pageSize: number;
 }
 
 /**
@@ -44,11 +65,8 @@ export async function getCurrentUser() {
 /**
  * 获取用户列表
  */
-export async function getUserList(params: UserListParams) {
-  return request.get<ApiResponse<{ list: UserInfo[]; total: number }>>(
-    '/api/user/list',
-    params
-  );
+export async function getUserList(params?: UserListParams) {
+  return request.get<ApiResponse<UserListResult>>('/api/user/list', params);
 }
 
 /**

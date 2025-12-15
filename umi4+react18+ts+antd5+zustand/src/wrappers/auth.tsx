@@ -1,5 +1,5 @@
 import { useUserStore } from '@/stores';
-import { Navigate, Outlet } from '@umijs/max';
+import { Navigate, Outlet, useLocation } from '@umijs/max';
 import { FC } from 'react';
 
 /**
@@ -7,6 +7,7 @@ import { FC } from 'react';
  * 用于保护需要登录才能访问的路由
  */
 const AuthWrapper: FC = () => {
+  const location = useLocation();
   const userInfo = useUserStore((state) => state.userInfo);
   const isLogin = !!userInfo?.token;
 
@@ -14,7 +15,8 @@ const AuthWrapper: FC = () => {
     return <Outlet />;
   }
 
-  return <Navigate to="/login" />;
+  const redirect = `${location.pathname}${location.search}`;
+  return <Navigate to={`/login?redirect=${encodeURIComponent(redirect)}`} />;
 };
 
 export default AuthWrapper;

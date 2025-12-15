@@ -17,17 +17,20 @@
 5. **请求规范** - 所有 API 请求必须使用 ahooks 的 `useRequest`，禁止直接调用 service
 6. **状态管理** - 全局状态必须使用 Zustand，遵循 selector 模式优化渲染
 7. **Hooks 优先** - 优先使用现有自定义 Hooks，不满足需求时扩展或新建 Hooks
+8. **工具函数** - 优先使用 `@/utils` 中的工具函数，如格式化、存储等
+9. **公共组件** - 页面开发优先使用 `@/components` 中的公共组件
 
 ## 目录结构
 
 ```
 src/
-├── components/     # 公共组件
+├── components/     # 公共组件 (PageContainer, SearchForm, ErrorBoundary)
 ├── pages/          # 页面组件
 ├── services/       # API 服务
 ├── stores/         # Zustand stores
-├── utils/          # 工具函数
+├── utils/          # 工具函数 (request, storage, format)
 ├── hooks/          # 自定义 Hooks
+├── constants/      # 常量定义 (REGEX, DATE_FORMAT, PAGINATION 等)
 └── types/          # 类型定义
 ```
 
@@ -82,3 +85,107 @@ await download({ id: 1 }, 'report.xlsx');
 import { message, modal } from '@/hooks';
 message.success('操作成功');
 ```
+
+### 工具函数
+
+```tsx
+// Storage 封装 - 类型安全，支持过期时间
+import { local, session } from '@/utils';
+local.set('key', value);                    // 存储
+local.set('key', value, 3600000);           // 1小时后过期
+const data = local.get<MyType>('key');      // 类型安全获取
+local.remove('key');                        // 删除
+
+// 格式化工具
+import { formatDate, formatMoney, formatPercent, maskPhone } from '@/utils';
+formatDate(Date.now());                     // '2024-12-09 13:40:00'
+formatDate(Date.now(), 'YYYY-MM-DD');       // '2024-12-09'
+formatMoney(12345.6);                       // '¥12,345.60'
+formatPercent(0.1234);                      // '12.34%'
+maskPhone('13800138000');                   // '138****8000'
+```
+
+### 公共组件
+
+```tsx
+// PageContainer - 页面容器（标题、面包屑、操作区）
+import { PageContainer } from '@/components';
+<PageContainer
+  title="用户管理"
+  breadcrumb={[{ title: '首页', path: '/' }, { title: '用户管理' }]}
+  extra={<Button type="primary">新增</Button>}
+  onRefresh={refresh}
+  loading={loading}
+>
+  {children}
+</PageContainer>
+
+// SearchForm - 查询表单（展开收起、自动布局）
+import { SearchForm } from '@/components';
+<SearchForm onSearch={handleSearch} onReset={reset} columns={3}>
+  <Form.Item name="name" label="姓名"><Input /></Form.Item>
+  <Form.Item name="status" label="状态"><Select options={COMMON_STATUS_OPTIONS} /></Form.Item>
+</SearchForm>
+```
+
+### 常量
+
+```tsx
+import { REGEX, DATE_FORMAT, PAGINATION, COMMON_STATUS_OPTIONS } from '@/constants';
+
+// 正则验证
+REGEX.PHONE.test('13800138000');            // 手机号
+REGEX.EMAIL.test('test@test.com');          // 邮箱
+REGEX.ID_CARD.test('110101199001011234');   // 身份证
+
+// 日期格式
+DATE_FORMAT.DATE;                           // 'YYYY-MM-DD'
+DATE_FORMAT.DATETIME;                       // 'YYYY-MM-DD HH:mm:ss'
+
+// 分页配置
+PAGINATION.DEFAULT_PAGE_SIZE;               // 10
+PAGINATION.PAGE_SIZE_OPTIONS;               // ['10', '20', '50', '100']
+
+// 状态选项（直接用于 Select）
+<Select options={COMMON_STATUS_OPTIONS} />
+```
+
+## 工程与开发规范
+
+1. **依赖管理** - 使用 pnpm 作为包管理器。
+2. **提交前自检** - 提交前必须通过 `pnpm lint`，并建议执行 `pnpm format`。
+3. **格式化** - 统一使用 Prettier（项目已配置 `.prettierrc`、`prettier-plugin-organize-imports`）。
+4. **环境变量** - 使用 `UMI_ENV=dev|test|prod` 区分环境（避免使用 `process.env.NODE_ENV` 写业务逻辑）。
+5. **日志规范** - 禁止在生产环境输出调试日志（如 `console.log`）。如需日志，必须加 `process.env.UMI_ENV === 'dev'` 保护。
+
+## 请求与服务层规范
+
+1. **统一请求封装** - Service 层必须使用 `@/utils/request`，禁止直接使用 `@umijs/max` 的原生 `request`。
+2. **页面请求规范** - 页面层/组件层必须使用 ahooks 的 `useRequest` 触发服务请求，禁止在事件函数内直接 `await service()`（下载类 hook 例外）。
+3. **错误处理** - 401/鉴权失败统一由 `@/utils/request` 的 errorHandler 处理并跳转登录。
+4. **返回结构对齐** - 后端若变更 `success/code/message` 结构，必须优先改 `@/utils/request` 的判断逻辑，避免页面到处适配。
+
+## 权限体系规范（方案一：权限点字符串 + PermissionWrapper）
+
+1. **权限点** - 使用字符串权限点（例如 `system.user.view`）。
+2. **菜单权限字段** - 后端/Mock 菜单的叶子节点使用 `access` 字段承载权限点。
+3. **路由拦截** - 路由级权限由 `src/wrappers/permission.tsx` 统一处理（根据 pathname 匹配菜单并校验权限）。
+4. **按钮/区域权限** - 组件内使用 `useAccess().hasPermission('xxx')` 控制按钮显示/禁用。
+5. **登录/退出刷新** - 登录成功、退出登录后必须 `refresh()` `@@initialState`，确保权限即时生效。
+
+## 状态管理规范（Zustand）
+
+1. **Selector 模式** - 组件内访问 store 必须使用 selector，避免整 store 订阅导致重渲染。
+2. **非 React 场景** - 仅在非 React 场景（如 `app.tsx`）使用 `useXxxStore.getState()`。
+3. **持久化** - 仅用户态等必要信息使用 persist（如 token/userInfo）。
+
+## 样式与组件规范
+
+1. **Antd 相关样式覆盖** - 使用 Less（保持与 Antd 设计系统一致）。
+2. **自定义业务组件** - 优先使用 Tailwind CSS（快速迭代，降低维护成本）。
+3. **组件结构** - 函数组件 + Hooks；组件 props 必须有明确类型；避免 `any`。
+
+## 路由与页面规范
+
+1. **新增页面** - 新增页面需在 `src/utils/routes.tsx` 的 `componentMap` 注册（动态路由依赖组件映射）。
+2. **页面容器** - 页面必须使用 `@/components/PageContainer`，并按需接入 `loading/onRefresh`。

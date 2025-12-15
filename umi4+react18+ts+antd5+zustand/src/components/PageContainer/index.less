@@ -1,0 +1,85 @@
+.pageContainer {
+  min-height: 100%;
+  padding: 16px 24px 24px;
+  background: #f5f5f5;
+}
+
+// 面包屑 - 无背景，在 pageHeader 上方
+.breadcrumb {
+  margin-bottom: 12px;
+
+  :global {
+    .ant-breadcrumb-link,
+    .ant-breadcrumb-separator {
+      font-size: 13px;
+      color: rgba(0, 0, 0, 45%);
+    }
+
+    .ant-breadcrumb-link:hover {
+      color: #1677ff;
+    }
+  }
+}
+
+// 页面头部 - 白色背景卡片
+.pageHeader {
+  padding: 16px 20px;
+  background: #fff;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 3%),
+    0 1px 6px -1px rgba(0, 0, 0, 2%),
+    0 2px 4px 0 rgba(0, 0, 0, 2%);
+}
+
+.headerMain {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerLeft {
+  flex: 1;
+}
+
+.titleWrapper {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 88%);
+  line-height: 1.4;
+}
+
+.subTitle {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 45%);
+}
+
+.content {
+  margin-top: 8px;
+  color: rgba(0, 0, 0, 65%);
+  font-size: 14px;
+}
+
+.headerRight {
+  flex-shrink: 0;
+  margin-left: 24px;
+}
+
+// 页面内容
+.pageContent {
+  :global {
+    .ant-card {
+      border-radius: 8px;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 3%),
+        0 1px 6px -1px rgba(0, 0, 0, 2%),
+        0 2px 4px 0 rgba(0, 0, 0, 2%);
+    }
+  }
+}

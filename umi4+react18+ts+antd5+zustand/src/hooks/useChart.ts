@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
-import * as echarts from 'echarts';
 import { useDebounceFn } from 'ahooks';
+import * as echarts from 'echarts';
+import { useEffect, useRef } from 'react';
 
 /**
  * ECharts 通用 Hook
@@ -21,11 +21,6 @@ export const useChart = (options?: echarts.EChartsOption) => {
   );
 
   useEffect(() => {
-    if (chartRef.current) {
-      // 初始化图表
-      chartInstance.current = echarts.init(chartRef.current);
-    }
-
     // 监听窗口大小变化
     window.addEventListener('resize', resize);
 
@@ -38,9 +33,14 @@ export const useChart = (options?: echarts.EChartsOption) => {
   }, []);
 
   useEffect(() => {
-    if (options && chartInstance.current) {
-      chartInstance.current.setOption(options);
+    if (!chartRef.current || !options) return;
+
+    // 延迟初始化，确保 DOM 已渲染
+    if (!chartInstance.current) {
+      chartInstance.current = echarts.init(chartRef.current);
     }
+
+    chartInstance.current.setOption(options, true);
   }, [options]);
 
   return {

@@ -1,9 +1,9 @@
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { AntdStaticHolder, useAntdApp } from '@/hooks/useAppMessage';
-import { logout } from '@/services';
-import { useAppStore, useUserStore } from '@/stores';
+import { logout, MenuItem } from '@/services';
+import { useAppStore, useMenuStore, useUserStore } from '@/stores';
+import * as Icons from '@ant-design/icons';
 import {
-  DashboardOutlined,
   LoadingOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
@@ -11,44 +11,53 @@ import {
   SettingOutlined,
   UserOutlined
 } from '@ant-design/icons';
-import { history, Outlet, useLocation } from '@umijs/max';
+import { history, Outlet, useLocation, useModel } from '@umijs/max';
 import { useRequest } from 'ahooks';
+import type { MenuProps } from 'antd';
 import { App, Avatar, Badge, Dropdown, Layout, Menu } from 'antd';
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import styles from './BasicLayout.less';
 
 const { Header, Sider, Content } = Layout;
 
-// 顶部模块配置
-const topModules = [
-  {
-    key: '/dashboard',
-    label: '工作台',
-    defaultPath: '/dashboard/analysis'
-  },
-  {
-    key: '/system',
-    label: '系统管理',
-    defaultPath: '/system/settings'
-  }
-];
+/**
+ * 根据图标名称获取图标组件
+ */
+const getIcon = (iconName?: string): React.ReactNode => {
+  if (!iconName) return null;
+  const IconComponent = (Icons as any)[iconName];
+  return IconComponent ? <IconComponent /> : null;
+};
 
-// 左侧菜单配置
-const siderMenuConfig: Record<string, any[]> = {
-  '/dashboard': [
-    {
-      key: '/dashboard/analysis',
-      label: '分析页',
-      icon: <DashboardOutlined />
-    }
-  ],
-  '/system': [
-    {
-      key: '/system/settings',
-      label: '系统设置',
-      icon: <SettingOutlined />
-    }
-  ]
+/**
+ * 从动态菜单提取顶部模块
+ */
+const getTopModules = (menus: MenuItem[]) => {
+  return menus
+    .filter((m) => m.path && m.name && !m.redirect)
+    .map((m) => ({
+      key: m.path,
+      label: m.name,
+      defaultPath: m.routes?.[0]?.path || m.path
+    }));
+};
+
+/**
+ * 将菜单数据转换为 Ant Design Menu 格式
+ */
+const menuToAntdItems = (menus: MenuItem[]): MenuProps['items'] => {
+  return menus
+    .filter((m) => !m.hideInMenu && !m.redirect && m.name)
+    .map((m) => {
+      const children = m.routes ? menuToAntdItems(m.routes) : undefined;
+      return {
+        key: m.path,
+        label: m.name,
+        icon: getIcon(m.icon),
+        // 只有有子菜单时才设置 children，避免空数组问题
+        children: children && children.length > 0 ? children : undefined
+      };
+    });
 };
 
 const BasicLayoutContent: FC = () => {
@@ -58,38 +67,60 @@ const BasicLayoutContent: FC = () => {
   // Zustand stores
   const userInfo = useUserStore((state) => state.userInfo);
   const clearUser = useUserStore((state) => state.clearUser);
+  const menus = useMenuStore((state) => state.menus);
+  const clearMenus = useMenuStore((state) => state.clearMenus);
   const collapsed = useAppStore((state) => state.collapsed);
   const setCollapsed = useAppStore((state) => state.setCollapsed);
   const toggleCollapsed = useAppStore((state) => state.toggleCollapsed);
 
+  const { refresh } = useModel('@@initialState');
+
   const { run: handleLogout, loading } = useRequest(logout, {
     manual: true,
-    onSuccess: () => {
+    onSuccess: async () => {
       message.success('已退出登录');
       clearUser();
+      clearMenus();
+      await refresh();
       history.push('/login');
     }
   });
+
+  // 从动态菜单生成顶部模块
+  const topModules = useMemo(() => getTopModules(menus), [menus]);
 
   // 获取当前顶部模块
   const currentTopModule = topModules.find((m) =>
     location.pathname.startsWith(m.key)
   );
-  const currentTopModuleKey = currentTopModule?.key || '/dashboard';
+  const currentTopModuleKey =
+    currentTopModule?.key || topModules[0]?.key || '/';
 
   // 获取当前模块的左侧菜单
-  const getSiderMenuItems = () => {
-    for (const [prefix, items] of Object.entries(siderMenuConfig)) {
-      if (location.pathname.startsWith(prefix)) {
-        return items;
-      }
+  const siderMenuItems = useMemo(() => {
+    // 跳过 redirect 项，找到有 routes 的模块
+    const currentModule = menus.find(
+      (m) => !m.redirect && m.routes && location.pathname.startsWith(m.path)
+    );
+    if (process.env.UMI_ENV === 'dev') {
+      console.log('[Layout] menus:', menus, 'currentModule:', currentModule);
+    }
+    if (currentModule?.routes) {
+      return menuToAntdItems(currentModule.routes);
     }
     return [];
-  };
-  const siderMenuItems = getSiderMenuItems();
+  }, [menus, location.pathname]);
 
   // 判断是否显示左侧菜单
-  const showSider = siderMenuItems.length > 0;
+  const showSider = siderMenuItems && siderMenuItems.length > 0;
+  if (process.env.UMI_ENV === 'dev') {
+    console.log(
+      '[Layout] siderMenuItems:',
+      siderMenuItems,
+      'showSider:',
+      showSider
+    );
+  }
 
   return (
     <Layout className={styles.layout}>

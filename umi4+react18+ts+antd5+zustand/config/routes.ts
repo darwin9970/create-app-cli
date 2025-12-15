@@ -1,3 +1,7 @@
+/**
+ * 基础路由配置
+ * 动态路由通过 patchClientRoutes 注入到 auth wrapper 下
+ */
 export default [
   {
     path: '/',
@@ -5,34 +9,16 @@ export default [
     routes: [
       {
         path: '/',
-        wrappers: ['@/wrappers/auth'],
+        wrappers: ['@/wrappers/auth', '@/wrappers/permission'],
         routes: [
-          {
-            path: '/',
-            redirect: '/dashboard/analysis'
-          },
-          {
-            path: '/dashboard/analysis',
-            component: './Dashboard/Analysis'
-          },
-          {
-            path: '/system/settings',
-            component: './System/Settings'
-          }
+          // 动态路由会注入到这里
+          { path: '/', component: './DynamicPage' },
+          { path: '*', component: './DynamicPage' }
         ]
       },
-      {
-        path: '*',
-        component: './Exception/404'
-      }
+      { path: '*', component: './Exception/404' }
     ]
   },
-  {
-    path: '/login',
-    component: './Auth/Login'
-  },
-  {
-    path: '*',
-    component: './Exception/404'
-  }
+  { path: '/login', component: './Auth/Login' },
+  { path: '*', component: './Exception/404' }
 ];

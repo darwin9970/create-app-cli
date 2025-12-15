@@ -1,6 +1,5 @@
 {
   "private": true,
-  "author": "xiangxiwen <xiangxiwen@zhiyong.com>",
   "scripts": {
     "build": "cross-env UMI_ENV=prod max build",
     "build:prod": "cross-env UMI_ENV=prod max build",
@@ -8,6 +7,7 @@
     "dev": "cross-env UMI_ENV=dev max dev",
     "format": "prettier --cache --write .",
     "postinstall": "max setup",
+    "lint": "max lint",
     "prepare": "husky",
     "setup": "max setup",
     "start": "npm run dev"
@@ -15,6 +15,7 @@
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
     "@ant-design/pro-components": "^2.4.4",
+    "@monaco-editor/react": "^4.7.0",
     "@umijs/max": "^4.6.4",
     "@xyflow/react": "^12.9.3",
     "ahooks": "^3.9.6",
